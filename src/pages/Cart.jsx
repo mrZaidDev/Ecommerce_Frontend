@@ -1,128 +1,36 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { CartDataContext } from "../context/CartContext";
-import { CircleX } from "lucide-react";
-import DiscountCodes from "../components/DiscountCodes";
-
+import useCartHandlers from "../hooks/useCartHandlers";
 const Cart = () => {
-  const [cartData, setCartData] = useContext(CartDataContext);
-  const [couponMessage, setCouponMessage] = useState(null);
-  const [couponCode, setCouponCode] = useState("");
-  const [isCouponApplied, setIsCouponApplied] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [shipping, setShipping] = useState(200);
-  const [finalTotal, setFinalTotal] = useState(0);
-  const [tax, setTax] = useState(0);
-  
+  const { removeFromCart, handleProductDecrease, handleProductIncrease } =
+    useCartHandlers();
+  const [
+    cartData,
+    setCartData,
+    subTotal,
+    setSubTotal,
+    discount,
+    setDiscount,
+    shipping,
+    setShipping,
+    total,
+    setTotal
+  ] = useContext(CartDataContext);
 
   useEffect(() => {
-    const calculateTotal = () => {
-      const total = cartData.reduce((acc, current_value) => {
-        return acc + current_value.price * current_value.quantity;
+    const calculateSubTotal = () => {
+      const total = cartData.reduce((acc, currentValue) => {
+        return acc + currentValue.price * currentValue.quantity;
       }, 0);
-      setTotal(total);
+      setSubTotal(total)
     };
-    calculateTotal();
+    calculateSubTotal();
   }, [cartData]);
 
-  useEffect(() => {
-    setFinalTotal(Math.floor(total * 1.02 - discount + shipping));
-  }, [total,discount,shipping]);
-
-  const discountValidation = (couponCode, total) => {
-    const foundCouponCode = DiscountCodes.find(
-      (coupon) => coupon.code === couponCode
-    );
-    if (!foundCouponCode) {
-      setCouponMessage({ message: "invalid coupon" });
-      return;
-    }
-    if (!foundCouponCode.active) {
-      setCouponMessage({ message: "invalid coupon" });
-      return;
-    }
-    if (foundCouponCode.type === "percentage") {
-      setIsCouponApplied(true);
-      setCouponMessage({ message: "coupon applied" });
-      const CouponDiscount = Math.floor((foundCouponCode.value / 100) * total);
-      setDiscount(CouponDiscount);
-    } else if (foundCouponCode.type === "fixed") {
-      setIsCouponApplied(true);
-      setCouponMessage({ message: "coupon applied" });
-      setDiscount(foundCouponCode.value);
-    } else if (foundCouponCode.type === "shipping") {
-      setIsCouponApplied(true);
-      setCouponMessage({ message: "coupon applied" });
-      setShipping(0);
-    }
-
-    // setDiscount(foundCouponCode.maxDiscount)
-    // setCouponMessage({ message: "Coupon Applied" });
-  };
-
-  const handleRemoveFromCart = (e) => {
-     setIsCouponApplied(false);
-    setCouponCode("")
-    setCouponMessage({ message: "" });
-    setDiscount(0)
-    setShipping(200)
-    const removeFromCartProduct = e;
-    const FilteredProducts = cartData.filter(
-      (e) => e.id !== removeFromCartProduct.id
-    );
-    setCartData(FilteredProducts);
-  };
-
-  const handleQuantityDecrease = (e) => {
-     setIsCouponApplied(false);
-    setCouponCode("")
-    setCouponMessage({ message: "" });
-    setDiscount(0)
-    setShipping(200)
-    const decreaseProductQuantity = e;
-    if (decreaseProductQuantity.quantity > 1) {
-      const index = cartData.findIndex(
-        (item) => item.id === decreaseProductQuantity.id
-      );
-      const shallowCartData = [...cartData];
-      decreaseProductQuantity.quantity -= 1;
-      shallowCartData.splice(index, 1, decreaseProductQuantity);
-      return setCartData(shallowCartData);
-    }
-    console.log("What are you doing");
-  };
-
-  const handleQuantityIncrease = (e) => {
-     setIsCouponApplied(false);
-    setCouponCode("")
-    setCouponMessage({ message: "" });
-    setDiscount(0)
-    setShipping(200)
-    const increaseProductQuantity = e;
-    const index = cartData.findIndex(
-      (item) => item.id === increaseProductQuantity.id
-    );
-    const shallowCartData = [...cartData];
-    increaseProductQuantity.quantity += 1;
-    shallowCartData.splice(index, 1, increaseProductQuantity);
-    return setCartData(shallowCartData);
-  };
-
-  const handleCouponCode = (e) => {
-    setCouponMessage({message:""})
-    setIsCouponApplied(false)
-    setDiscount(0)
-    setShipping(200)
-    setCouponCode(e.target.value);
-  };
-  const handleCouponRemoving = () => {
-    setIsCouponApplied(false);
-    setCouponCode("")
-    setCouponMessage({ message: "Coupon is unapplied" });
-    setDiscount(0)
-    setShipping(200)
-
-  };
+  useEffect(()=>{
+    const collecting = subTotal + discount + shipping
+    setTotal(collecting)
+  },[subTotal,cartData,discount,shipping])
 
   return (
     <div className="min-h-screen">
@@ -131,97 +39,86 @@ const Cart = () => {
         {/* Left Side – Products */}
         <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Products</h2>
-          {cartData.map((e) => {
-            return (
+          <div className="grid grid-cols-1  items-center md:gap-10 border-t p-4 mb-4 relative">
+            {cartData.map((product) => (
               <div
-                key={e.id}
-                className="grid grid-cols-2 md:grid-cols-3 items-center md:gap-10 border-t  p-4 mb-4 relative"
+                key={product.id}
+                className="grid grid-cols-2 md:grid-cols-3 items-center md:gap-10 border-b p-4 mb-4 relative"
               >
-                <CircleX
-                  className="absolute right-0 top-0 m-3"
-                  onClick={() => handleRemoveFromCart(e)}
-                />
+                <div
+                  className="absolute right-0 top-0 m-3 cursor-pointer"
+                  onClick={() => removeFromCart(product._id)}
+                >
+                  ✕
+                </div>
+                {/* Product Info */}
                 <div className="flex items-center gap-1">
                   <img
-                    src={e.image}
-                    alt="Product"
+                    src={product.image}
+                    alt={product.name}
                     className="w-24 h-24 object-cover rounded"
                   />
                   <p className="font-medium text-lg hidden md:block">
-                    {e.name}
+                    {product.name}
                   </p>
                 </div>
+
                 {/* Quantity */}
                 <div className="flex my-2 gap-1 mt-8">
                   <button
                     className="bg-gray-300 px-2 py-0 rounded"
-                    onClick={() => handleQuantityDecrease(e)}
+                    onClick={() => handleProductDecrease(product)}
                   >
                     -
                   </button>
                   <p className="text-sm text-gray-500">
-                    Quantity{" "}
-                    <span className="text-black font-[20px]">{e.quantity}</span>
+                    Quantity
+                    <span className="text-black font-[20px]">
+                      {product.quantity}
+                    </span>
                   </p>
                   <button
                     className="bg-gray-300 px-2 py-0 rounded"
-                    onClick={() => handleQuantityIncrease(e)}
+                    onClick={() => handleProductIncrease(product)}
                   >
                     +
                   </button>
                 </div>
+
+                {/* Price */}
                 <p className="text-sm text-gray-700 text-[20px] font-bold mt-1 ml-4">
-                  Rs.{e.price}
+                  Rs. {product.price}
                 </p>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
         {/* Right Side – Summary */}
-        <div className="lg:col-span-1 bg-white rounded-lg shadow p-6 h-fit ">
+        <div className="lg:col-span-1 bg-white rounded-lg shadow p-6 h-fit">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+
+          {/* Coupon Section */}
           <div className="flex flex-col justify-between font-semibold mb-8">
             <div className="flex items-center justify-between">
-              <label htmlFor="">Apply Coupon</label>
-              <input
-                value={couponCode}
-                onChange={handleCouponCode}
-                type="text"
-                className="border"
-              />
+              <label>Apply Coupon</label>
+              <input type="text" className="border px-2 py-1" />
             </div>
-            <div>
-              {couponMessage && (
-                <p
-                  className={`${
-                    isCouponApplied ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {couponMessage.message}
-                </p>
-              )}
-            </div>
+
             <div className="flex items-center justify-between mt-2">
-              <button
-                onClick={() => discountValidation(couponCode, total)}
-                className="bg-gray-300 px-2 font-semibold rounded w-20"
-              >
+              <button className="bg-gray-300 px-2 font-semibold rounded w-20">
                 Apply
               </button>
-              {isCouponApplied && (
-                <button
-                  onClick={handleCouponRemoving}
-                  className="bg-gray-300 px-2 font-semibold rounded "
-                >
-                  Remove Coupon
-                </button>
-              )}
+              <button className="bg-gray-300 px-2 font-semibold rounded">
+                Remove Coupon
+              </button>
             </div>
           </div>
+
+          {/* Price Breakdown */}
           <div className="flex justify-between font-semibold">
             <span>Sub Total</span>
-            <span>Rs. {total}</span>
+            <span>Rs. {subTotal}</span>
           </div>
           <div className="flex justify-between font-semibold">
             <span>Discount</span>
@@ -231,19 +128,19 @@ const Cart = () => {
             <span>Shipping</span>
             <span>Rs. {shipping}</span>
           </div>
-          <div className="flex justify-between font-semibold">
-            <span>Tax</span>
-            <span>2%</span>
-          </div>
-          <hr />
+
+          <hr className="my-2" />
+
           <div className="flex justify-between font-semibold">
             <span>Total</span>
-            <span>{finalTotal}</span>
+            <span>Rs. {total}</span>
           </div>
+
           <button className="w-full mt-4 bg-black text-white py-2 rounded">
             Checkout
           </button>
         </div>
+
         {/* Right Side done */}
       </div>
     </div>

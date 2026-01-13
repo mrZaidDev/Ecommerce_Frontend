@@ -1,26 +1,40 @@
-import React, { useContext, useState } from "react";
-import { fakeProducts } from "../components/products.js";
-import { CartDataContext } from "../context/CartContext.jsx";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { CartDataContext } from "../context/CartContext";
 
 const Products = () => {
-  const [cartData, setCartData] = useContext(CartDataContext);
-  const [products, setProducts] = useState(fakeProducts);
-
-  const handleAddToCart = (e) => {
-    const addToCartProduct = e;
-    const index = cartData.findIndex((item) => item.id === e.id);
-    if (index == -1) {
-      addToCartProduct.quantity = 1;
-      return setCartData([...cartData, addToCartProduct]);
-    }
-    const shallowCartData = [...cartData];
-    addToCartProduct.quantity += 1;
-    shallowCartData.splice(index, 1, addToCartProduct);
-    setCartData(shallowCartData);
+  const [cartData,setCartData] = useContext(CartDataContext)
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  console.log(cartData)
+  const imageClick = (e) => {
+    navigate(`/products/${e._id}`);
   };
 
+  useEffect(() => {
+    const getAllProducts = async () => {
+      const products = await axios.get(
+        "http://localhost:5000/api/products/all"
+      );
+      setProducts(products.data.allProducts);
+    };
+    getAllProducts();
+  }, []);
+
+  const handleAddToCart = (product) => {
+    const alreadyExists = cartData.find((p) => p._id === product._id)
+    if(!alreadyExists) {
+      product.quantity = 1
+     return setCartData([...cartData,product])
+    }
+    console.log('product already exists')
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product, i) => (
         <div
           key={i}
@@ -45,12 +59,19 @@ const Products = () => {
               <span className="text-2xl font-bold text-gray-700">
                 Rs.{product.price}
               </span>
-              <button
-                onClick={() => handleAddToCart(product)}
-                className="bg-black  text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              >
-                Add to cart
-              </button>
+              {product.stock > 0 ? (
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className="bg-black  text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                >
+                  Add to cart
+                </button>
+              ) : (
+                <button className="bg-red-500  text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                  {" "}
+                  Out of Stock
+                </button>
+              )}
             </div>
           </div>
         </div>

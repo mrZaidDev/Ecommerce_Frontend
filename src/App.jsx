@@ -1,19 +1,26 @@
-import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
-import Products from "./pages/Products.jsx";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
+import NavBar from "./components/Navbar";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Cart from "./pages/Cart";
-import Navbar from "./components/Navbar.jsx";
 
 const App = () => {
-  return(
-    <div className="my-5 mx-5" >
-      <Navbar/>
-    <Routes>
-      <Route path="/" element={<Products />} />
-      <Route path="/cart" element={<Cart />} />
-    </Routes>
-  </div>
-  )
+  return (
+    <div className="my-5 mx-5">
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/cart" element={<Cart />} />
+      </Routes>
+    </div>
+  );
 };
 
 export default App;
