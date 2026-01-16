@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CiMenuBurger } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { AuthDataContext } from "../context/AuthContext";
+
 const NavBar = () => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -19,6 +21,8 @@ const NavBar = () => {
   const clickBurger = () => {
     setBurgerMenu(!burgerMenu);
   };
+
+  const [isAuthenticated, isAdmin] = useContext(AuthDataContext);
 
   return (
     <nav className="flex items-center justify-around bg-white/30 backdrop-blur-md h-[9vh] text-black sticky top-0 left-0 z-10">
@@ -57,37 +61,42 @@ const NavBar = () => {
                 </Link>
                 {/* Admin */}
               </ul>
-              <button className="bg-blue-600 text-white rounded py-2 w-30 ">
-                <Link
-                  to={"/products"}
-                  onClick={clickBurger}
-                  className="cursor-pointer"
-                >
-                  <li>Products</li>
-                </Link>
-              </button>
             </div>
           )}
         </>
       ) : (
-        <>
-          <ul className="flex flex-row gap-5 font-sans">
-            <Link to={"/"} className="cursor-pointer">
-              <li>Home</li>
-            </Link>
-            <Link to={"/products"} className="cursor-pointer">
-              <li>Products</li>
-            </Link>
-            <Link to={"/cart"} className="cursor-pointer">
-              <li>Cart</li>
-            </Link>
-          </ul>
-          <button className="bg-blue-600 text-white rounded py-2 w-30 ">
-            <Link to={"/products"} className="cursor-pointer">
-              <li>Products</li>
-            </Link>
-          </button>
-        </>
+        <ul className="flex flex-row gap-5 font-sans">
+          <Link to={"/"} className="cursor-pointer">
+            <li>Home</li>
+          </Link>
+          <Link to={"/products"} className="cursor-pointer">
+            <li>Products</li>
+          </Link>
+          <Link to={"/cart"} className="cursor-pointer">
+            <li>Cart</li>
+          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link to={"/profile"} className="cursor-pointer">
+                <li>Profile</li>
+              </Link>
+              {isAdmin && (
+                <Link to={"/profile"} className="cursor-pointer">
+                  <li>Admin</li>
+                </Link>
+              )}
+            </>
+          ) : (
+            <>
+              <Link to={"/login"} className="cursor-pointer">
+                <li>Login</li>
+              </Link>
+              <Link to={"/register"} className="cursor-pointer">
+                <li>Register</li>
+              </Link>
+            </>
+          )}
+        </ul>
       )}
     </nav>
   );

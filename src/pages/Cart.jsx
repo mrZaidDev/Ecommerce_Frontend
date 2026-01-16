@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { CartDataContext } from "../context/CartContext";
 import useCartHandlers from "../hooks/useCartHandlers";
+import { Link } from "react-router-dom";
 const Cart = () => {
   const { removeFromCart, handleProductDecrease, handleProductIncrease } =
     useCartHandlers();
@@ -14,7 +15,7 @@ const Cart = () => {
     shipping,
     setShipping,
     total,
-    setTotal
+    setTotal,
   ] = useContext(CartDataContext);
 
   useEffect(() => {
@@ -22,15 +23,15 @@ const Cart = () => {
       const total = cartData.reduce((acc, currentValue) => {
         return acc + currentValue.price * currentValue.quantity;
       }, 0);
-      setSubTotal(total)
+      setSubTotal(total);
     };
     calculateSubTotal();
   }, [cartData]);
 
-  useEffect(()=>{
-    const collecting = subTotal + discount + shipping
-    setTotal(collecting)
-  },[subTotal,cartData,discount,shipping])
+  useEffect(() => {
+    const collecting = subTotal + discount + shipping;
+    setTotal(collecting);
+  }, [subTotal, cartData, discount, shipping]);
 
   return (
     <div className="min-h-screen">
@@ -136,9 +137,11 @@ const Cart = () => {
             <span>Rs. {total}</span>
           </div>
 
-          <button className="w-full mt-4 bg-black text-white py-2 rounded">
-            Checkout
-          </button>
+          <Link to="/checkout">
+            <button className="w-full mt-4 bg-black text-white py-2 rounded">
+              Checkout
+            </button>
+          </Link>
         </div>
 
         {/* Right Side done */}

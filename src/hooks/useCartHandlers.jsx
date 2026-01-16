@@ -21,6 +21,7 @@ const useCartHandlers = () => {
       return setCartData(shallowCartData);
     }
   };
+  
   const handleProductIncrease = (product) => {
     const index = cartData.findIndex((item) => item._id === product._id);
     const shallowCartData = [...cartData];

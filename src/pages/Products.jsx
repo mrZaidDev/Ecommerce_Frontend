@@ -6,10 +6,10 @@ import { useContext } from "react";
 import { CartDataContext } from "../context/CartContext";
 
 const Products = () => {
-  const [cartData,setCartData] = useContext(CartDataContext)
+  const [cartData, setCartData] = useContext(CartDataContext);
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  console.log(cartData)
+  console.log(cartData);
   const imageClick = (e) => {
     navigate(`/products/${e._id}`);
   };
@@ -25,13 +25,22 @@ const Products = () => {
   }, []);
 
   const handleAddToCart = (product) => {
-    const alreadyExists = cartData.find((p) => p._id === product._id)
-    if(!alreadyExists) {
-      product.quantity = 1
-     return setCartData([...cartData,product])
+    console.log(product);
+
+    const alreadyExists = cartData.find((p) => p._id === product._id);
+    if (!alreadyExists) {
+      product.quantity = 1;
+      const cartProduct = {
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        quantity: product.quantity,
+        image: product.image,
+      };
+      return setCartData([...cartData, cartProduct]);
     }
-    console.log('product already exists')
-  }
+    console.log("product already exists");
+  };
 
   return (
     <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
