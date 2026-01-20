@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CartDataContext } from "../context/CartContext";
+import { BASE_API } from "../config/api";
 
 const Products = () => {
   const [cartData, setCartData] = useContext(CartDataContext);
@@ -17,7 +18,7 @@ const Products = () => {
   useEffect(() => {
     const getAllProducts = async () => {
       const products = await axios.get(
-        "http://localhost:5000/api/products/all"
+        `${BASE_API}/products/all`
       );
       setProducts(products.data.allProducts);
     };
