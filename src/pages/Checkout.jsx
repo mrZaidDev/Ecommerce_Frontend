@@ -1,8 +1,13 @@
 import React, { useContext } from "react";
 import { useState } from "react";
+import axios from "axios";
+import { BASE_API } from "../config/api";
+import { AuthDataContext } from "../context/AuthContext";
 import { CartDataContext } from "../context/CartContext";
 
 const Checkout = () => {
+  const [isAuthenticated, isAdmin, user] = useContext(AuthDataContext);
+
   const [
     cartData,
     setCartData,
@@ -15,12 +20,7 @@ const Checkout = () => {
     total,
     setTotal,
   ] = useContext(CartDataContext);
-
-  const [formData, setFormData] = useState({
-    orderItems:cartData,
-    subtotal: subTotal,
-    discount,
-    total,
+   const [shippingAddress, setShippingAddress] = useState({
     line1: "",
     line2: "",
     city: "",
@@ -29,9 +29,27 @@ const Checkout = () => {
     country: "",
   });
 
-  const handleFormSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    user: user._id,
+    orderItems: cartData,
+    subtotal: subTotal,
+    discount,
+    total,
+    shippingAddress
+  });
+ 
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    // try {
+    //   const res = await axios.post(`${BASE_API}/orders/create`, formData, {
+    //     withCredentials: true,
+    //   });
+    //   console.log(res);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -60,9 +78,9 @@ const Checkout = () => {
                 Address Line 1 <span className="text-red-500">*</span>
               </label>
               <input
-                value={formData.line1}
+                value={shippingAddress.line1}
                 onChange={(e) =>
-                  setFormData({ ...formData, line1: e.target.value })
+                  setShippingAddress({ ...shippingAddress, line1: e.target.value })
                 }
                 type="text"
                 placeholder="House number, street name"
@@ -77,9 +95,9 @@ const Checkout = () => {
                 Address Line 2
               </label>
               <input
-                value={formData.line2}
+                value={shippingAddress.line2}
                 onChange={(e) =>
-                  setFormData({ ...formData, line2: e.target.value })
+                  setShippingAddress({ ...shippingAddress, line2: e.target.value })
                 }
                 type="text"
                 placeholder="Apartment, suite, landmark (optional)"
@@ -93,9 +111,9 @@ const Checkout = () => {
                 City
               </label>
               <input
-                value={formData.city}
+                value={shippingAddress.city}
                 onChange={(e) =>
-                  setFormData({ ...formData, city: e.target.value })
+                  setShippingAddress({ ...shippingAddress, city: e.target.value })
                 }
                 type="text"
                 placeholder="Enter your city"
@@ -109,9 +127,9 @@ const Checkout = () => {
                 State / Province
               </label>
               <input
-                value={formData.province}
+                value={shippingAddress.province}
                 onChange={(e) =>
-                  setFormData({ ...formData, province: e.target.value })
+                  setShippingAddress({ ...shippingAddress, province: e.target.value })
                 }
                 type="text"
                 placeholder="Enter state or province"
@@ -125,9 +143,9 @@ const Checkout = () => {
                 Postal Code
               </label>
               <input
-                value={formData.postalCode}
+                value={shippingAddress.postalCode}
                 onChange={(e) =>
-                  setFormData({ ...formData, postalCode: e.target.value })
+                  setShippingAddress({ ...shippingAddress, postalCode: e.target.value })
                 }
                 type="text"
                 placeholder="ZIP / Postal Code"
@@ -141,9 +159,9 @@ const Checkout = () => {
                 Country
               </label>
               <input
-                value={formData.country}
+                value={formData.shippingAddress}
                 onChange={(e) =>
-                  setFormData({ ...formData, country: e.target.value })
+                  setShippingAddress({ ...shippingAddress, country: e.target.value })
                 }
                 type="text"
                 placeholder="Enter your country"

@@ -81,7 +81,7 @@ const NavBar = () => {
                 <li>Profile</li>
               </Link>
               {isAdmin && (
-                <Link to={"/profile"} className="cursor-pointer">
+                <Link to={"/admin"} className="cursor-pointer">
                   <li>Admin</li>
                 </Link>
               )}

@@ -21,6 +21,7 @@ import UpdateDiscount from "./pages/admin/adminDiscounts/UpdateDiscount";
 import AdminOrders from "./pages/admin/adminOrders/AdminOrders";
 import SingleOrder from "./pages/admin/adminOrders/SingleOrder";
 import UpdateOrder from "./pages/admin/adminOrders/UpdateOrder";
+import AdminRoute from "./components/AdminRoute";
 
 const App = () => {
   return (
@@ -33,7 +34,14 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/admin" element={<Admin />}>
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          }
+        >
           <Route path="users" element={<AdminUsers />} />
           <Route path="update-user/:id" element={<UpdateUser />} />
           <Route path="products" element={<AdminProducts />} />

@@ -10,29 +10,18 @@ const AuthContext = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get(`${BASE_API}/users/verify`, {
-          withCredentials: true,
-        });
-        setIsAuthenticated(true);
-        setUser(response.data.user);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkAuth();
-  }, []);
 
   const login = async (email, password) => {
     try {
       const response = await axios.post(
         `${BASE_API}/users/login`,
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      console.log(response);
+      setIsAuthenticated(true);
+      setUser(response.data.user);
+      setIsAdmin(response.data.user.role === "admin");
+      navigate("/products");
     } catch (error) {
       console.log(error);
     }
@@ -56,13 +45,33 @@ const AuthContext = ({ children }) => {
       const response = await axios.post(
         `${BASE_API}/users/register`,
         { name, email, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      console.log(response);
+      setIsAuthenticated(true);
+      setUser(response.data.user);
+      setIsAdmin(response.data.user.role === "admin");
+      navigate("/products");
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(`${BASE_API}/users/verify`, {
+          withCredentials: true,
+        });
+        setIsAuthenticated(true);
+        setUser(response.data.user);
+        setIsAdmin(response.data.user.role === "admin");
+        navigate("/products");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkAuth();
+  }, []);
 
   return (
     <div>
