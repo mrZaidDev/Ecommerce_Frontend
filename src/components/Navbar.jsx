@@ -59,7 +59,27 @@ const NavBar = () => {
                 >
                   <li>Cart</li>
                 </Link>
-                {/* Admin */}
+                {isAuthenticated ? (
+                  <>
+                    <Link to={"/profile"} className="cursor-pointer">
+                      <li>Profile</li>
+                    </Link>
+                    {isAdmin && (
+                      <Link to={"/admin"} className="cursor-pointer">
+                        <li>Admin</li>
+                      </Link>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Link to={"/login"} className="cursor-pointer">
+                      <li>Login</li>
+                    </Link>
+                    <Link to={"/register"} className="cursor-pointer">
+                      <li>Register</li>
+                    </Link>
+                  </>
+                )}
               </ul>
             </div>
           )}
