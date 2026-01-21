@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { errorNotify, successNotify } from "../utils/Toast";
 
-const useFetchById = (url) => { //how to use multiple states in any other ///////////ZZZZZZZZZZ
+const useFetchById = (url) => {
   const [response, setResponse] = useState();
   useEffect(() => {
     const fetch = async () => {
@@ -12,7 +13,7 @@ const useFetchById = (url) => { //how to use multiple states in any other //////
         });
         setResponse(res.data);
       } catch (error) {
-        console.log(error);
+        errorNotify(error.response.data.message);
       }
     };
     fetch();

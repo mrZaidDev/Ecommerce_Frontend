@@ -3,13 +3,15 @@ export const AuthDataContext = createContext();
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_API } from "../config/api";
+import toast from "react-hot-toast";
 
 const AuthContext = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-
+  const successNotify = (message) => toast.success(message);
+  const errorNotify = (message) => toast.error(message);
 
   const login = async (email, password) => {
     try {
@@ -21,9 +23,10 @@ const AuthContext = ({ children }) => {
       setIsAuthenticated(true);
       setUser(response.data.user);
       setIsAdmin(response.data.user.role === "admin");
+      successNotify(response.data.message);
       navigate("/products");
     } catch (error) {
-      console.log(error);
+      errorNotify(error?.response?.data?.message)
     }
   };
 
@@ -47,12 +50,14 @@ const AuthContext = ({ children }) => {
         { name, email, password },
         { withCredentials: true },
       );
+      console.log(response);
       setIsAuthenticated(true);
       setUser(response.data.user);
       setIsAdmin(response.data.user.role === "admin");
+      successNotify(response.data.message);
       navigate("/products");
     } catch (error) {
-      console.log(error);
+      errorNotify(error?.response?.data?.message);
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_API } from "../../../config/api";
 import { useNavigate } from "react-router-dom";
+import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const AdminProducts = () => {
   const navigate = useNavigate();
@@ -14,7 +15,9 @@ const AdminProducts = () => {
           withCredentials: true,
         });
         setProducts(res.data.allProducts);
-      } catch (error) {}
+      } catch (error) {
+        errorNotify(error.response.data.message)
+      }
     };
     getAllProducts();
   }, []);
@@ -26,9 +29,9 @@ const AdminProducts = () => {
   const handleProductDelete = async (productId) => {
     try {
       const res = await axios.delete(`${BASE_API}/products/product/${productId}`)
-      console.log(res)
+      successNotify(res.data.message)
     } catch (error) {
-      console.log(error)  
+      errorNotify(error.res.data.message)
     }
   } 
 

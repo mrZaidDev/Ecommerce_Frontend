@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_API } from "../../../config/api";
 import { useNavigate } from "react-router-dom";
+import { errorNotify } from "../../../utils/Toast";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -12,10 +13,9 @@ const AdminOrders = () => {
         const res = await axios.get(`${BASE_API}/admin/orders`, {
           withCredentials: true,
         });
-        console.log(res);
         setOrders(res.data.allOrders);
       } catch (error) {
-        console.log(error);
+        errorNotify(error.response.data.message);
       }
     };
     getAllOrders();
@@ -23,7 +23,7 @@ const AdminOrders = () => {
 
   const handleOrderUpdate = (orderId) => {
     navigate(`/admin/update-order/${orderId}`);
-  }
+  };
 
   const handleOrderView = (orderId) => {
     navigate(`/admin/view-order/${orderId}`);
@@ -73,7 +73,7 @@ const AdminOrders = () => {
                   {order._id}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 text-gray-700">
-                  {order.user.name}
+                  {order?.user?.name}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 text-gray-700">
                   {order.total}

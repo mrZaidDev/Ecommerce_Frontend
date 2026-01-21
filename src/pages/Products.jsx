@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CartDataContext } from "../context/CartContext";
 import { BASE_API } from "../config/api";
+import { errorNotify, notify, successNotify } from "../utils/Toast";
 
 const Products = () => {
   const [cartData, setCartData] = useContext(CartDataContext);
@@ -17,17 +18,17 @@ const Products = () => {
 
   useEffect(() => {
     const getAllProducts = async () => {
-      const products = await axios.get(
-        `${BASE_API}/products/all`
-      );
-      setProducts(products.data.allProducts);
+      try {
+        const products = await axios.get(`${BASE_API}/products/all`);
+        setProducts(products.data.allProducts);
+      } catch (error) {
+        errorNotify(error.response.data.message)
+      }
     };
     getAllProducts();
   }, []);
 
   const handleAddToCart = (product) => {
-    console.log(product);
-
     const alreadyExists = cartData.find((p) => p._id === product._id);
     if (!alreadyExists) {
       product.quantity = 1;
@@ -38,9 +39,10 @@ const Products = () => {
         quantity: product.quantity,
         image: product.image,
       };
-      return setCartData([...cartData, cartProduct]);
+      setCartData([...cartData, cartProduct]);
+      return successNotify("product added to cart");
     }
-    console.log("product already exists");
+    notify("product already in the cart");
   };
 
   return (

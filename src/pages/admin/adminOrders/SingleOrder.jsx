@@ -13,7 +13,6 @@ const SingleOrder = () => {
     }
   }, [response]);
 
-  console.log(orderData);
   if (orderData) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_API } from "../../../config/api";
 import { useNavigate } from "react-router-dom";
+import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -15,24 +16,24 @@ const AdminUsers = () => {
         });
         setUsers(res.data.allUsers);
       } catch (error) {
-        console.log(error);
+        errorNotify(error.res.data.message)
       }
     };
     getAllUsers();
   }, []);
 
   const editUser = (user) => {
-    navigate(`/admin/update-user/${user._id}`)
+    navigate(`/admin/update-user/${user._id}`);
   };
 
   const deleteUser = async (user) => {
     try {
-       const res = await axios.delete(`${BASE_API}/admin/users/${user._id}`, {
-          withCredentials: true,
-        });
-        console.log(res)
+      const res = await axios.delete(`${BASE_API}/admin/users/${user._id}`, {
+        withCredentials: true,
+      });
+      successNotify(res.data.message);
     } catch (error) {
-      console.log(error)
+      errorNotify(error.response.data.message);
     }
   };
 
@@ -40,12 +41,6 @@ const AdminUsers = () => {
     <main className="">
       <div className="flex items-center gap-10 p-5">
         <h2 className="text-[22px] font-semibold">Users</h2>
-        {/* <button
-          className="bg-blue-600 text-white rounded py-2 px-4 "
-          //   onClick={CreateProduct}
-        >
-          Add New User
-        </button> */}
       </div>
       <div className="overflow-x-auto">
         {/* {products ? ( */}

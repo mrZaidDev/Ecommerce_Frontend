@@ -22,11 +22,13 @@ import AdminOrders from "./pages/admin/adminOrders/AdminOrders";
 import SingleOrder from "./pages/admin/adminOrders/SingleOrder";
 import UpdateOrder from "./pages/admin/adminOrders/UpdateOrder";
 import AdminRoute from "./components/AdminRoute";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
     <div className="my-5 mx-5">
       <NavBar />
+      <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />

@@ -4,11 +4,15 @@ import { BASE_API } from "../../../config/api";
 import axios from "axios";
 import useFetchById from "../../../hooks/useFetchById";
 import { useState } from "react";
+import { errorNotify, successNotify } from "../../../utils/Toast";
+import {useNavigate} from 'react-router-dom'
 
 const UpdateUser = () => {
+  const navigate = useNavigate()
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const { id } = useParams();
+  
 
   const { response } = useFetchById(`${BASE_API}/admin/users/${id}`);
 
@@ -29,9 +33,10 @@ const UpdateUser = () => {
         },
         { withCredentials: true },
       );
-      console.log(res);
+      successNotify(res.data.message)
+      navigate('/admin/users')
     } catch (error) {
-      console.log(error);
+      errorNotify(error.res.data.message)
     }
   };
 

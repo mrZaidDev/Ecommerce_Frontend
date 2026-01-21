@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useFetchById from "../../../hooks/useFetchById";
 import { BASE_API } from "../../../config/api";
 import { useEffect } from "react";
 import axios from "axios";
+import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const UpdateProduct = () => {
+  const navigate = useNavigate()
   const { id } = useParams();
   const { response } = useFetchById(`${BASE_API}/products/product/${id}`);
   const [formData, setFormData] = useState({
@@ -15,26 +17,25 @@ const UpdateProduct = () => {
     image: "",
     stock: "",
   });
-  console.log(formData);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-   try {
-     const res = await axios.put(
-      `${BASE_API}/products/product/${id}`,
-      {
-        name: formData.name,
-        description: formData.description,
-        price: Number(formData.price),
-        image: formData.image,
-        stock: Number(formData.stock),
-      },
-      { withCredentials: true },
-    );
-    console.log(res)
-   } catch (error) {
-    console.log(error)
-   }
+    try {
+      const res = await axios.put(
+        `${BASE_API}/products/product/${id}`,
+        {
+          name: formData.name,
+          description: formData.description,
+          price: Number(formData.price),
+          image: formData.image,
+          stock: Number(formData.stock),
+        },
+        { withCredentials: true },
+      );
+      successNotify(res.data.message);
+    } catch (error) {
+      errorNotify(error.res.data.message);
+    }
   };
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_API } from "../../../config/api";
 import { useNavigate } from "react-router-dom";
+import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const AdminDiscounts = () => {
   const [discounts, setDiscounts] = useState([]);
@@ -14,7 +15,7 @@ const AdminDiscounts = () => {
         });
         setDiscounts(res.data);
       } catch (error) {
-        console.log(error);
+        errorNotify(error.res.data.message);
       }
     };
     getAllDiscounts();
@@ -25,15 +26,15 @@ const AdminDiscounts = () => {
       const res = await axios.delete(
         `${BASE_API}/discount/delete/${discountId}`,
       );
-      console.log(res);
+      successNotify(res.data.message);
     } catch (error) {
-      console.log(error);
+      errorNotify(error.res.data.message);
     }
   };
 
   const handleDiscountUpdate = (discountId) => {
-    navigate(`/admin/update-discount/${discountId}`)
-  }
+    navigate(`/admin/update-discount/${discountId}`);
+  };
 
   return (
     <main className="">

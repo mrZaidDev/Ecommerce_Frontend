@@ -1,8 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { BASE_API } from "../../../config/api";
+import { errorNotify, successNotify } from "../../../utils/Toast";
+import { useNavigate } from "react-router-dom";
 
 const CreateDiscount = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     code: "",
     description: "",
@@ -29,9 +32,10 @@ const CreateDiscount = () => {
           withCredentials: true,
         },
       );
-      console.log(res);
+      successNotify(res.data.message);
+      navigate("/admin/discounts");
     } catch (error) {
-      console.log(error);
+      errorNotify(error.res.data.message);
     }
   };
 

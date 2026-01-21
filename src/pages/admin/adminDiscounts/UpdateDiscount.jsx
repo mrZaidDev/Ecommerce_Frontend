@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_API } from "../../../config/api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import useFetchById from "../../../hooks/useFetchById";
+import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const UpdateDiscount = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [discountData, setDiscountData] = useState(null);
   const { response } = useFetchById(`${BASE_API}/discount/get/${id}`);
@@ -31,29 +33,29 @@ const UpdateDiscount = () => {
     active: "",
   });
 
-  console.log(formData)
-    const handleFormSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const res = await axios.put(
-          `${BASE_API}/discount/update/${id}`,
-          {
-            code: formData.code,
-            description: formData.description,
-            discountType: formData.discountType,
-            value: Number(formData.value),
-            minimumPurchase: Number(formData.minimumPurchase),
-            active: Boolean(formData.active),
-          },
-          {
-            withCredentials: true,
-          },
-        );
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.put(
+        `${BASE_API}/discount/update/${id}`,
+        {
+          code: formData.code,
+          description: formData.description,
+          discountType: formData.discountType,
+          value: Number(formData.value),
+          minimumPurchase: Number(formData.minimumPurchase),
+          active: Boolean(formData.active),
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      successNotify(res.data.message);
+      navigate("/admin/discounts");
+    } catch (error) {
+      errorNotify(error.res.data.message);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -164,21 +166,21 @@ const UpdateDiscount = () => {
           </div>
 
           {/* Submit Button */}
-           <div className="flex gap-3 pt-2">
-              <button
-                type="submit"
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl transition"
-              >
-                Update Product
-              </button>
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl transition"
+            >
+              Update Product
+            </button>
 
-              <button
-                type="button"
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-xl transition"
-              >
-                Cancel
-              </button>
-            </div>
+            <button
+              type="button"
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-xl transition"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

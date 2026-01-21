@@ -3,6 +3,7 @@ import useFetchById from "../../../hooks/useFetchById";
 import { useParams } from "react-router-dom";
 import { BASE_API } from "../../../config/api";
 import axios from "axios";
+import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const UpdateOrder = () => {
   const { id } = useParams();
@@ -25,20 +26,23 @@ const UpdateOrder = () => {
     }
   }, [response]);
 
-  console.log(formData);
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.put(
-      `${BASE_API}/admin/orders/${id}`,
-      {
-        paymentStatus: formData.paymentStatus,
-        orderStatus: formData.orderStatus,
-      },
-      { withCredentials: true },
-    );
-    console.log(res);
+    try {
+      const res = await axios.put(
+        `${BASE_API}/admin/orders/${id}`,
+        {
+          paymentStatus: formData.paymentStatus,
+          orderStatus: formData.orderStatus,
+        },
+        { withCredentials: true },
+      );
+      successNotify(res.data.message);
+    } catch (error) {
+      errorNotify(error.res.data.message);
+    }
   };
+  
   if (orderData) {
     return (
       <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">

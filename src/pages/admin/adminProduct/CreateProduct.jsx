@@ -2,8 +2,11 @@ import axios from "axios";
 import React from "react";
 import { useState } from "react";
 import { BASE_API } from "../../../config/api";
+import { errorNotify, successNotify } from "../../../utils/Toast";
+import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -26,13 +29,12 @@ const CreateProduct = () => {
         },
         { withCredentials: true },
       );
-      console.log(res)
+      successNotify(res.data.message);
+      navigate('/admin/products')
     } catch (error) {
-      console.log(error);
+      errorNotify(error.res.data.message);
     }
   };
-
-  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
