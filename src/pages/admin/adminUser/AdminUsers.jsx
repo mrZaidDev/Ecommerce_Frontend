@@ -43,7 +43,6 @@ const AdminUsers = () => {
         <h2 className="text-[22px] font-semibold">Users</h2>
       </div>
       <div className="overflow-x-auto">
-        {/* {products ? ( */}
         <table className="min-w-full bg-white shadow-md rounded-lg ">
           <thead>
             <tr>

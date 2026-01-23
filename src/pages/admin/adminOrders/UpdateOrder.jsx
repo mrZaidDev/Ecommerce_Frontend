@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import useFetchById from "../../../hooks/useFetchById";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_API } from "../../../config/api";
 import axios from "axios";
 import { errorNotify, successNotify } from "../../../utils/Toast";
 
 const UpdateOrder = () => {
+  const navigate = useNavigate()
   const { id } = useParams();
   const [orderData, setOrderData] = useState(null);
 
@@ -38,6 +39,7 @@ const UpdateOrder = () => {
         { withCredentials: true },
       );
       successNotify(res.data.message);
+      navigate('/admin/orders')
     } catch (error) {
       errorNotify(error.res.data.message);
     }

@@ -33,6 +33,7 @@ const UpdateProduct = () => {
         { withCredentials: true },
       );
       successNotify(res.data.message);
+      navigate('/admin/products')
     } catch (error) {
       errorNotify(error.res.data.message);
     }

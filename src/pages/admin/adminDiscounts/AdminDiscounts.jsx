@@ -38,13 +38,13 @@ const AdminDiscounts = () => {
 
   return (
     <main className="">
-      <div className="flex items-center gap-10 p-5">
+      <div className="flex items-center gap-5 p-2 md:p-5">
         <h2 className="text-[22px] font-semibold">Discounts</h2>
         <button
-          className="bg-blue-600 text-white rounded py-2 px-4 "
+          className="bg-blue-600 text-white rounded py-1 px-2 md:py-2 md:px-4 "
           onClick={() => navigate("/admin/create-discount")}
         >
-          Add New Discount Code
+          Add Discount Code
         </button>
       </div>
       <div className="overflow-x-auto">

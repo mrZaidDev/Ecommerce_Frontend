@@ -36,18 +36,19 @@ const AdminProducts = () => {
   } 
 
   return (
-    <main className="">
+    <main className="bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="flex items-center gap-10 p-5">
         <h2 className="text-[22px] font-semibold">Products</h2>
         <button
-          className="bg-blue-600 text-white rounded py-2 px-4 "
+          className="bg-blue-600 text-white rounded py-1 px-2 md:py-2 md:px-4 "
           onClick={() => navigate("/admin/create-product")}
         >
-          Add New Product
+          Add Product
         </button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded-lg ">
+
+    <div className="overflow-x-auto">
+        <table className="w-full bg-white shadow-md rounded-lg ">
           <thead>
             <tr>
               <th className="py-3 px-4 bg-gray-100 font-bold uppercase text-sm text-gray-600 border-b border-gray-200 text-left">
@@ -105,10 +106,12 @@ const AdminProducts = () => {
             ))}
           </tbody>
         </table>
-        {/* } */}
-      </div>
+      </div>   
+    
     </main>
   );
 };
+
+
 
 export default AdminProducts;

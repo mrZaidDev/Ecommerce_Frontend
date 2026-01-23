@@ -1,19 +1,42 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { CartDataContext } from "../context/CartContext";
+import { notify, successNotify } from "../utils/Toast";
+
+
 const ProductDetails = () => {
+  const [cartData, setCartData] = useContext(CartDataContext)
   const { id } = useParams();
   const [product, setProduct] = useState({});
-  console.log(product)
+
   useEffect(() => {
     const fetchProductById = async () => {
-      const product = await axios.get(
+      const res = await axios.get(
         `http://localhost:5000/api/products/product/${id}`
       );
-      setProduct(product.data.findSingleProduct);
+      console.log(res)
+      setProduct(res.data.product);
     };
     fetchProductById();
   },[]);
+
+  const handleAddToCart = (product) => {
+      const alreadyExists = cartData.find((p) => p._id === product._id);
+      if (!alreadyExists) {
+        product.quantity = 1;
+        const cartProduct = {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          quantity: product.quantity,
+          image: product.image,
+        };
+        setCartData([...cartData, cartProduct]);
+        return successNotify("product added to cart");
+      }
+      notify("product already in the cart");
+    };
 
   return (
     <div className="min-h-[screen] p-4 lg:p-8">
@@ -74,9 +97,11 @@ const ProductDetails = () => {
               </div>
 
               <div className="space-y-3">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg">
+                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                onClick={()=>handleAddToCart(product)}
+                >
                   {/* <ShoppingCart className="w-5 h-5" /> */}
-                  Buy Now
+                  Add to Cart
                 </button>
               </div>
             </div>

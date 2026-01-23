@@ -23,10 +23,11 @@ import SingleOrder from "./pages/admin/adminOrders/SingleOrder";
 import UpdateOrder from "./pages/admin/adminOrders/UpdateOrder";
 import AdminRoute from "./components/AdminRoute";
 import { Toaster } from "react-hot-toast";
+import Orders from "./pages/Orders";
 
 const App = () => {
   return (
-    <div className="my-5 mx-5">
+    <div className="my-2 mx-2 md:my-5 md:mx-5">
       <NavBar />
       <Toaster />
       <Routes>
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/orders" element={<Orders />} />
         <Route
           path="/admin"
           element={
